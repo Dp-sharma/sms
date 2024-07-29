@@ -18,7 +18,7 @@ const QuickPresence = () => {
         };
         try {
             // Send the data to the API
-            const response = await fetch('/api/StudentData', {
+            const response = await fetch('/api/Student/StudentData', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
