@@ -45,7 +45,7 @@ const StudentInfo = () => {
 
         try {
             // Send the data to the API
-            const response = await fetch('/api/student', {
+            const response = await fetch('/api/StudentDataEntry', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

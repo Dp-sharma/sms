@@ -7,7 +7,7 @@ export async function POST(request) {
     try {
         await connectDB(); // Ensure DB connection
 
-        const { rollNo, name, class: { number, section }, batchYear } = await request.json(); // Parse the request body
+        const { class: { number, section }, batchYear } = await request.json(); // Parse the request body
 
         // Validate inputs
         if (number < 1 || number > 12) {
@@ -32,32 +32,14 @@ export async function POST(request) {
         });
 
         if (record) {
-            // Record exists, update it
-            const studentExists = record.studentData.some(student => student.rollNo === rollNo);
-            if (studentExists) {
-                return NextResponse.json({
-                    success: false,
-                    msg: 'Student with this roll number already exists in the class'
-                }, { status: 400 });
-            }
-
-            // Add new student data
-            record.studentData.push({ rollNo, name });
-            await record.save(); // Save updated record
-        } else {
-            // Record does not exist, create a new one
-            record = new Student_data({
-                batchYear,
-                class: { number, section: section.toUpperCase() },
-                studentData: [{ rollNo, name }]
-            });
-
-            await record.save(); // Save new record
+            // Take the record and return as a response
+            return NextResponse.json({success:true,Data:record.studentData, status: 200});
+            
         }
 
         return NextResponse.json({
             success: true,
-            msg: 'Student data saved successfully'
+            msg: 'Student data Fetched successfully'
         }, { status: 201 });
 
     } catch (error) {
@@ -68,3 +50,5 @@ export async function POST(request) {
         }, { status: 500 });
     }
 }
+
+
