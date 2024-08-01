@@ -1,45 +1,38 @@
 'use clients'
-import React, { useState } from 'react';
-
+import React, { useEffect, useState } from 'react';
+import './Quick_presence.css'
 const QuickPresence = () => {
-    const [batchYear, setBatchYear] = useState('');
-    const [classNumber, setClassNumber] = useState('');
-    const [section, setSection] = useState('');
     const [students, setStudents] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [attendanceStatus, setAttendanceStatus] = useState('Present');
 
-    const fetchData = async () => {
-        const classData = {
-            class: {
-                number: classNumber,
-                section: section.toUpperCase(),
-            },
-            batchYear
-        };
+    const verifyUser = async () => {
         try {
-            // Send the data to the API
-            const response = await fetch('/api/Student/StudentData', {
-                method: 'POST',
+            console.log('Verifying user');
+            const response = await fetch('/api/QuickPresence/Attendance/initialize', {
+                method: 'Get',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(classData),
+
             });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Response data:', data);
+                setStudents(data.data);
+            } else {
+                console.log('Failed to fetch data:', response.statusText);
             }
-            const responseData = await response.json(); // Parse response data
-            console.log(responseData.Data);
-            setStudents(responseData.Data); // Update students state with fetched data
-            // setStudents(response.Data);
-            // Handle successful submission
-            alert('Student data Recived successfully!');
+
         } catch (error) {
-            console.error('Error:', error);
-            alert('There was an error submitting the data');
+            console.log(error);
         }
-    };
+    }
+    useEffect(() => {
+        console.log('I am running');
+        verifyUser();
+    }, [])
 
     const handlePrevious = () => {
         if (currentIndex > 0) {
@@ -52,43 +45,74 @@ const QuickPresence = () => {
             setCurrentIndex(prevIndex => prevIndex + 1);
         }
     };
+    const handleAttendanceChange = (e) => {
+        setAttendanceStatus(e.target.value);
+    };
+    const handleSubmitAttendance = async () => {
+        const student = students[currentIndex];
+        console.log(student);
+        try {
+            const response = await fetch('/api/QuickPresence/attendance/Update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    rollNo: student.rollNo,
+                    status: attendanceStatus
+                }),
+            });
+
+            if (response.ok) {
+                alert('Attendance updated successfully');
+                initializeAttendance(); // Refresh attendance data
+            } else {
+                console.log(response);
+                console.log('Failed to update attendance:', response.statusText);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
-        <div>
+        <div className='Attendence_box'>
             <h2>Quick Presence</h2>
-            <div className="input-section">
-                <input
-                    type="number"
-                    placeholder="Enter Batch Year"
-                    value={batchYear}
-                    onChange={(e) => setBatchYear(e.target.value)}
-                />
-                <input
-                    type="number"
-                    placeholder="Enter Class Number"
-                    value={classNumber}
-                    onChange={(e) => setClassNumber(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Enter Section"
-                    value={section}
-                    onChange={(e) => setSection(e.target.value)}
-                />
-                <button onClick={fetchData}>Fetch Student Data</button>
-            </div>
 
             {students.length > 0 && (
-                <div className="student-card">
-                    <h3>Student Details</h3>
-                    <p><strong>Name:</strong> {students[currentIndex].name}</p>
-                    <p><strong>Roll No:</strong> {students[currentIndex].rollNo}</p>
-                </div>
-            )}
+        <div className="student-card">
+          <h3>Student Details</h3>
+          <p><strong>Name:</strong> {students[currentIndex].name}</p>
+          <p><strong>Roll No:</strong> {students[currentIndex].rollNo}</p>
+          <div className="attendance-status">
+            <label>
+              <input
+                type="radio"
+                value="Present"
+                checked={attendanceStatus === 'Present'}
+                onChange={handleAttendanceChange}
+              />
+              Present
+            </label>
+            <label>
+              <input
+                type="radio"
+                value="Absent"
+                checked={attendanceStatus === 'Absent'}
+                onChange={handleAttendanceChange}
+              />
+              Absent
+            </label>
+          </div>
+          <button onClick={handleSubmitAttendance} className='Quick_presence_btn'>
+            Update Attendance
+          </button>
+        </div>
+      )}
 
             <div className="navigation-buttons">
-                <button onClick={handlePrevious} disabled={currentIndex === 0}>Previous</button>
-                <button onClick={handleNext} disabled={currentIndex === students.length - 1}>Next</button>
+                <button onClick={handlePrevious} className='Quick_presence_btn' disabled={currentIndex === 0}>Previous</button>
+                <button onClick={handleNext} className='Quick_presence_btn' disabled={currentIndex === students.length - 1}>Next</button>
             </div>
         </div>
     );

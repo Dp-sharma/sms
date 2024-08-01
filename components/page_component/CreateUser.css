@@ -1,0 +1,52 @@
+.Register_image{
+    height: 70vh;
+    border-radius: 40px;
+    filter: drop-shadow(0px 0px 0px black)invert(7%);
+}
+.form_box{
+    display: flex;
+    
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgba(255, 155, 255, 0.641);
+    gap: 20px;
+}
+.form_container{
+    border: 2px solid black;
+    padding-left: 10px;
+    color: black;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 50vw;
+    border-radius: 10px;
+    
+}
+select {
+    background-color: rgba(255, 255, 255, 0); /* Fully transparent */
+    border: none; /* Remove border if needed */
+    color: #000; /* Set text color to ensure readability */
+  }
+  
+select option {
+    background-color: rgba(255, 255, 255, 1); /* Option backgrounds are fully opaque */
+  }
+  
+@media screen and (max-width:800px) {
+    .Register_image{
+        display: none;
+    }
+    .form_container{
+        width: 80vw;
+    }
+    .form_box{
+        gap: 0px;
+    }
+}
+@media screen and (max-width:400px) {
+    
+    .form_container{
+        width: 100vw;
+    }
+}

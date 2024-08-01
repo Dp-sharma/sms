@@ -2,3 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+.myinput{
+    background-color: transparent;
+    outline: none;
+    border-bottom: 2px solid black;
+}
+.myinput::placeholder{
+    color: black;
+    outline: none;
+}

@@ -1,0 +1,28 @@
+.Attendence_box{
+   background-color: rgba(134, 251, 134, 0.421); 
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+
+}
+.student-card{
+    border: 1px solid black;
+    width: 90%;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: white;
+    border-radius: 10px;
+}
+.Quick_presence_btn{
+    padding: 10px 20px;
+    border: none;
+    background-color: blue;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin:auto 20px ;
+}
+.Quick_presence_btn:active{
+   transform: scale(0.95);
+}

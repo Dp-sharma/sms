@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/app/lib/mongodb';// Adjust path as necessary
 import Student_data from '@/app/models/Student_data';
-
+import jwt from 'jsonwebtoken';
 
 export async function POST(request) {
     try {
@@ -51,4 +51,27 @@ export async function POST(request) {
     }
 }
 
-
+// Get request to get student data
+import { cookies } from "next/headers";
+ export async function GET(request) {
+    const cookiestore = cookies();
+    const token = cookiestore.get('jwtoken');
+    const value = token.value
+    try {
+        const decoded = jwt.verify(value, process.env.ACCESS_TOKEN_SECRET);
+        const user = decoded.user;
+        console.log("Decoded user:", user);
+        return NextResponse.json({
+            success:true,
+            data:user,
+        },{
+            status: 200
+        })
+    } catch (error) {
+        console.log(error)
+        return NextResponse.json({
+            success: false,
+               msg: 'Error'
+           },{ status : 400});
+    }
+ }
