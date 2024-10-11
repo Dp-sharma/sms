@@ -13,11 +13,13 @@ const CreateUser = () => {
   const [dob, setDob] = useState('');
   const [gender, setGender] = useState('');
   const [className, setClassName] = useState('');
+  const [school, setSchool] = useState('');
   const [section, setSection] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const userData = {
+      school,
       firstName,
       role,
       position,
@@ -59,9 +61,13 @@ const CreateUser = () => {
   return (
     <div className='form_box' >
       <div >
-        <img src="Register.jpg" alt="Register image" className='Register_image'/>
+        {/* <img src="Register.jpg" alt="Register image" className='Register_image'/> */}
       </div>
       <form onSubmit={handleSubmit} className='form_container'>
+        <label>
+          School:
+          <input type="text"className='myinput' value={school} onChange={(e) => setSchool(e.target.value)} />
+        </label>
         <label>
           First Name:
           <input type="text"className='myinput' value={firstName} onChange={(e) => setFirstName(e.target.value)} />

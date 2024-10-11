@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
+  school:{
+    type: String,
+    required: true,
+  },
   firstName: {
     type: String,
     required: true,

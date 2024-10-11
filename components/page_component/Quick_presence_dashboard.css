@@ -1,0 +1,161 @@
+.quick_presence_dashboard_intro{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    
+}
+.heading{
+    font-size: 2rem;
+    font-weight: bold;
+    
+}
+.sub-heading{
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.greeting{
+    color: grey;
+    font-size: 2rem;
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
+.functionality_card_div{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    width: 80vw;
+    /* gap: 10vw; */
+}
+.functionality_card{
+    /* z-index: -1; */
+    border-radius: 20px;
+    height: 300px;
+    width: 350px;
+    background-color: rgba(200, 200, 200, 0.24);
+    box-shadow: 2px 2px 2px 2px rgba(84, 139, 143, 0.16) ;
+    width: 400px;
+    border: 0.2px solid rgb(87, 87, 87);
+    position: relative;
+    margin-bottom: 10vh;
+}
+.functionality_card_content{
+    top: 0px;
+    margin: 20px;
+}
+.functionality_card_icon{
+    height: 5vh;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+}
+.functionality_card_btn_div{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    
+    bottom: 50px;
+    /* flex-direction: column; */
+}
+.functionality_card_btn_light{
+    width: 100%;
+    border-radius: 20px;
+    background-color: rgba(133, 175, 186, 0.678);
+    /* color:rgba(3, 179, 255, 0.89); */
+    color: rgb(0, 119, 255);
+    font-weight: 500;
+    padding: 10px;
+    
+}
+.functionality_card_btn_heavy{
+    width: 100%;
+    /* background-color: rgba(3, 179, 255, 0.89); */
+    border-radius: 20px;
+    background-color: rgb(0, 119, 255);
+    color: rgb(255, 255, 255) ;
+    font-weight: 500;
+    padding: 10px;
+}
+.today_summary_card {
+    /* height: 50vh; */
+    width: 350px;
+    background-color: #e3f2fd;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .numerical_data {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .pie_chart {
+    width: 100%;
+    height: 150px;
+  }
+@media screen and (max-width: 900px){
+    .functionality_card_icon{
+        height: 3vh;
+        position: absolute;
+        right: 10px;
+        top: 5px;
+    }
+    .heading{
+    font-size: 1.5rem;
+    font-weight: bold;
+    
+}
+.functionality_card_btn_div{
+    display: flex;
+    flex-direction: column;
+}
+
+.functionality_card{
+    border-radius: 10%;
+    height: 200px;
+    width: 40%;
+}
+.sub-heading{
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+.greeting{
+    color: grey;
+    font-size: 2rem;
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
+.pie_chart {
+    width: 100%;
+    
+    height: 30vh;
+  }
+}
+@media screen and (max-width:600px) {
+    .functionality_card_div{
+        flex-direction: column;
+        align-content: center;
+    }
+    .functionality_card{
+        border: 20px;
+        width: 350px;
+
+    }
+}
+@media screen and (max-width: 400px){
+    .greeting{
+        font-size: 1.5rem;
+
+    }
+    .functionality_card_div{
+        flex-direction: column;
+        align-content: center;
+    }
+    .functionality_card{
+        width: 350px;
+        
+
+    }
+}

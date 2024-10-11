@@ -3,7 +3,8 @@ import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import { cookies } from "next/headers";
 import connectDB from '@/app/lib/mongodb';
-import Attendance from '@/app/models/Attendance_model';
+
+import Attendance from '@/app/models/Attendence_model';
 
 export async function POST(request) {
   const cookiestore = cookies();

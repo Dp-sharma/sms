@@ -1,0 +1,276 @@
+/* Basic styling for navigation bar */
+.Navigation {
+  z-index: 5;
+  border-bottom: 2px solid #00aaff; /* Light blue border */
+  height: 12vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: sticky; /* Change to sticky */
+  top: 0; /* Stick to the top of the viewport */
+  background-color: #ffffff; /* White background for the navbar */
+  width: 100%; /* Ensure it spans the full width */
+}
+
+
+/* Sidebar styling */
+.sidebar {
+  width: 250px;
+  height: 100%;
+  background-color: #cce7ff; /* Light blue background for the sidebar */
+  position: fixed;
+  top: 0;
+  left: -250px;
+  transition: left 0.3s ease;
+  z-index: 5;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for separation */
+}
+
+.sidebar_div {
+  height: 80vh;
+  overflow-y: auto;
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+/* Styling for details summary */
+.sidebar details {
+  border-radius: 8px;
+  padding: 5px;
+  margin-bottom: 0;
+  background-color: #a8d1ff; /* Lighter blue-grey for details */
+}
+
+.sidebar summary {
+  font-size: 1.2rem;
+  color: #003b66; /* Dark blue text color for the summary */
+  cursor: pointer;
+  border: 1px solid #00aaff; /* Lighter blue border */
+  padding: 10px;
+  border-radius: 6px;
+  background-color: #e0f0ff; /* Very light blue */
+}
+
+.sidebar summary:hover {
+  background-color: #cce7ff; /* Light blue on hover */
+}
+
+/* Styling for details list */
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  padding: 10px;
+  border-bottom: 1px solid #a8d1ff; /* Divider between list items */
+}
+
+.sidebar li:last-child {
+  border-bottom: none; /* Remove border from the last item */
+}
+
+.sidebar a {
+  color: #003b66; /* Dark blue text color */
+  text-decoration: none;
+  display: block;
+}
+
+.sidebar a:hover {
+  background-color: #e0f0ff; /* Highlight background on hover */
+  border-radius: 6px;
+}
+/* .sidebar details[open] summary::marker {
+  content: url('/Icon/QuickPresence/Dashboard/turn-back.png'); 
+} */
+/* .sidebar details summary::marker {
+  content: url('/Icon/QuickPresence/Dashboard/turn-back.png'); 
+} */
+
+/* Optional: Add responsive styles */
+@media screen and (max-width: 900px) {
+  .sidebar {
+      width: 200px; /* Adjust width for smaller screens */
+  }
+
+  .sidebar details {
+      font-size: 1rem; /* Smaller font size for details */
+  }
+
+  .sidebar summary {
+      font-size: 1rem; /* Smaller font size for summary */
+  }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2); /* Slightly lighter overlay */
+  z-index: 4;
+}
+
+.nav-action-bar {
+  display: flex;
+  gap: 10px;
+  position: absolute;
+  right: 1vw;
+}
+
+.nav-action-icon {
+  height: 3vh;
+}
+
+.toggle-img {
+  height: 30px;
+}
+
+.banner {
+  display: flex;
+  gap: 3vw;
+  position: absolute;
+  left: 5px;
+}
+
+.icon {
+  height: 3rem;
+  width: 3rem;
+  padding: 10%;
+}
+
+.Nav-li {
+  display: flex;
+  padding: 5px 15px;
+  align-items: center;
+  gap: 10px;
+  transition: background-color 0.3s ease, border-radius 0.3s ease;
+}
+
+.Nav-li:hover {
+  background-color: #f0f8ff; /* Very light grey/blue on hover */
+  border-radius: 15px;
+}
+
+.Nav-ul {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+  gap: 20px;
+  height: auto;
+}
+
+.active {
+  background-color: #b3e0ff; /* Light blue for active state */
+  border-radius: 15px;
+}
+
+.active_icon {
+  border-radius: 10px;
+  background-color: #00aaff; /* Lighter blue for active icon */
+}
+
+.Nav-li img {
+  transition: border-radius 0.3s ease, background-color 0.3s ease;
+}
+
+.Nav-li:hover img {
+  border-radius: 10px;
+  background-color: #00aaff; /* Lighter blue background on hover */
+}
+
+@media screen and (max-width: 1000px) {
+  .icon_text {
+      font-size: smaller;
+  }
+
+  li {
+      gap: 5px;
+      padding: 3px 10px;
+  }
+
+  .Nav-ul {
+      display: flex;
+      justify-content: flex-start;
+      gap: 10px;
+  }
+
+  .Nav-li {
+      padding: 5px 15px;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .Navigation {
+      justify-content: start;
+  }
+
+  .nav-action-bar {
+      top: 3vh;
+  }
+
+  .banner {
+      width: 50vw;
+      position: relative;
+  }
+
+  .plaster-regular {
+      font-family: "Plaster", system-ui;
+      font-weight: 400;
+      font-style: normal;
+  }
+
+  .brand-logo {
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+      font-size: max(2rem, 4vw);
+  }
+
+  .toggle-img {
+      height: 5vh;
+  }
+
+  .active {
+      background-color: #b3e0ff; /* Light blue for active state */
+  }
+
+  .active_icon {
+      border-radius: 10px;
+      background-color: #00aaff; /* Lighter blue for active icon */
+  }
+
+  .Navbar {
+      border-top: 2px solid #00aaff; /* Light blue border at the top */
+      position: fixed;
+      bottom: 0px;
+      width: 100%;
+      background-color: #ffffff; /* White background for the navbar */
+  }
+
+  .Nav-li {
+      border: 2px solid #00aaff; /* Light blue border for nav items */
+      border-radius: 20px;
+      border: none;
+      flex-direction: column;
+      padding: 5px;
+  }
+
+  .icon {
+      height: 3rem;
+      width: 3rem;
+      padding: 10%;
+  }
+
+  .Nav-ul {
+      height: 13vh;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      position: static;
+      flex-direction: row;
+  }
+}

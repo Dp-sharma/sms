@@ -10,6 +10,7 @@ const AttendanceSchema = new Schema({
     section: { type: String, required: true }
   },
   records: [{
+    name: { type: String, required: true },
     rollNo: { type: String, required: true },
     status: { type: String, enum: ['Present', 'Absent'], required: true }
   }]

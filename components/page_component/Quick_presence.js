@@ -1,6 +1,8 @@
-'use clients'
+'use client';
 import React, { useEffect, useState } from 'react';
-import './Quick_presence.css'
+import './Quick_presence.css';
+import Link from 'next/link';
+
 const QuickPresence = () => {
     const [students, setStudents] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -10,11 +12,10 @@ const QuickPresence = () => {
         try {
             console.log('Verifying user');
             const response = await fetch('/api/QuickPresence/Attendance/initialize', {
-                method: 'Get',
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-
             });
 
             if (response.ok) {
@@ -24,15 +25,14 @@ const QuickPresence = () => {
             } else {
                 console.log('Failed to fetch data:', response.statusText);
             }
-
         } catch (error) {
-            console.log(error);
+            console.log('Error fetching data:', error);
         }
-    }
+    };
+
     useEffect(() => {
-        console.log('I am running');
         verifyUser();
-    }, [])
+    }, []);
 
     const handlePrevious = () => {
         if (currentIndex > 0) {
@@ -45,75 +45,63 @@ const QuickPresence = () => {
             setCurrentIndex(prevIndex => prevIndex + 1);
         }
     };
-    const handleAttendanceChange = (e) => {
-        setAttendanceStatus(e.target.value);
+
+    const handleAttendanceChange = (status) => {
+        setAttendanceStatus(status);
+        handleSubmitAttendance(status);
+        handleNext();
     };
-    const handleSubmitAttendance = async () => {
+
+    const handleSubmitAttendance = async (status) => {
         const student = students[currentIndex];
-        console.log(student);
+
         try {
-            const response = await fetch('/api/QuickPresence/attendance/Update', {
+            const response = await fetch('/api/QuickPresence/Attendance/Update', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     rollNo: student.rollNo,
-                    status: attendanceStatus
+                    status
                 }),
             });
 
             if (response.ok) {
-                alert('Attendance updated successfully');
-                initializeAttendance(); // Refresh attendance data
+                console.log(`Attendance updated to ${status}`);
+                verifyUser(); // Refresh the student list
             } else {
-                console.log(response);
                 console.log('Failed to update attendance:', response.statusText);
             }
         } catch (error) {
-            console.log(error);
+            console.log('Error updating attendance:', error);
         }
     };
 
     return (
         <div className='Attendence_box'>
             <h2>Quick Presence</h2>
-
+            <Link href='/quick_presence'>
+                <img src="/Icon/QuickPresence/turn-back.png" alt="back" className='backicon' />
+            </Link>
             {students.length > 0 && (
-        <div className="student-card">
-          <h3>Student Details</h3>
-          <p><strong>Name:</strong> {students[currentIndex].name}</p>
-          <p><strong>Roll No:</strong> {students[currentIndex].rollNo}</p>
-          <div className="attendance-status">
-            <label>
-              <input
-                type="radio"
-                value="Present"
-                checked={attendanceStatus === 'Present'}
-                onChange={handleAttendanceChange}
-              />
-              Present
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="Absent"
-                checked={attendanceStatus === 'Absent'}
-                onChange={handleAttendanceChange}
-              />
-              Absent
-            </label>
-          </div>
-          <button onClick={handleSubmitAttendance} className='Quick_presence_btn'>
-            Update Attendance
-          </button>
-        </div>
-      )}
-
-            <div className="navigation-buttons">
-                <button onClick={handlePrevious} className='Quick_presence_btn' disabled={currentIndex === 0}>Previous</button>
-                <button onClick={handleNext} className='Quick_presence_btn' disabled={currentIndex === students.length - 1}>Next</button>
-            </div>
+                <div className="student-card">
+                    <h3>Student Details</h3>
+                    <p><strong>Name:</strong> {students[currentIndex].name}</p>
+                    <p><strong>Roll No:</strong> {students[currentIndex].rollNo}</p>
+                    <p><strong>Status:</strong> {students[currentIndex].status}</p>
+                    <div className="attendance-status">
+                        <button className='bg-green-200 m-1 rounded p-1 attendence_status_btn' onClick={() => handleAttendanceChange('Present')}>Present</button>
+                        <button className='bg-red-500 m-1 rounded p-1 attendence_status_btn' onClick={() => handleAttendanceChange('Absent')}>Absent</button>
+                    </div>
+                    <button onClick={handlePrevious} className='Quick_presence_btn Previous_btn' disabled={currentIndex === 0}>
+                        <img src="/Icon/QuickPresence/arrow-left.png" alt="arrow" className='Navigation_icon' />
+                    </button>
+                    <button onClick={handleNext} className='Quick_presence_btn Next_btn' disabled={currentIndex === students.length - 1}>
+                        <img src="/Icon/QuickPresence/arrow-right.png" alt="arrow" className='Navigation_icon' />
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

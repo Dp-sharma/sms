@@ -1,0 +1,11 @@
+.toggle-img{
+    height: 3vh;
+}
+@media screen and (width: 768px) {
+
+}
+@media screen and (width: 400px) {
+    .toggle-img{
+        height: 5vh;
+    }
+}

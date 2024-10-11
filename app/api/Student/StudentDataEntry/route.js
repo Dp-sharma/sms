@@ -7,7 +7,7 @@ export async function POST(request) {
     try {
         await connectDB(); // Ensure DB connection
 
-        const { rollNo, name, class: { number, section }, batchYear } = await request.json(); // Parse the request body
+        const { rollNo, name,school_name, class: { number, section }, batchYear } = await request.json(); // Parse the request body
 
         // Validate inputs
         if (number < 1 || number > 12) {
@@ -26,6 +26,7 @@ export async function POST(request) {
 
         // Check if the record for the given batchYear, class number, and section exists
         let record = await Student_data.findOne({
+            'school':school_name,
             batchYear,
             'class.number': number,
             'class.section': section.toUpperCase()
@@ -48,6 +49,7 @@ export async function POST(request) {
             // Record does not exist, create a new one
             record = new Student_data({
                 batchYear,
+                school: school_name,
                 class: { number, section: section.toUpperCase() },
                 studentData: [{ rollNo, name }]
             });

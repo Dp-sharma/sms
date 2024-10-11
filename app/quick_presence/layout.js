@@ -6,8 +6,11 @@ export default function DashboardLayout({
       <section>
         {/* Include shared UI here e.g. a header or sidebar */}
         {/* <nav></nav> */}
-        <Navbar/>
+        <Navbar activeItem={"attendence"}/>
+        <div >
+        {/* className="lg:ml-[20vw] xl:ml-[20vw] 2xl:ml-[20vw] " */}
         {children}
+        </div>
       </section>
     )
   }

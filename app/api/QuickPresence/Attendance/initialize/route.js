@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { cookies } from "next/headers";
 import connectDB from '@/app/lib/mongodb';
 import Student_data from '@/app/models/Student_data';
+
 import Attendance from '@/app/models/Attendence_model';
 
 export async function GET(request) {
@@ -16,7 +17,9 @@ export async function GET(request) {
     await connectDB();
 
     if (!token) {
-      return NextResponse.json({ success: false, msg: 'No token provided' }, { status: 401 });
+      console.log('User is not logged in');
+      
+      return NextResponse.json({ success: false, msg: 'You are Not logged in' }, { status: 401 });
     }
 
     const value = token.value;
@@ -38,19 +41,21 @@ export async function GET(request) {
         'class.number': className,
         'class.section': section.toUpperCase()
       }).exec();
-      
+      console.log(studentRecord);
       if (studentRecord) {
         const records = studentRecord.studentData.map(student => ({
+          name: student.name,
           rollNo: student.rollNo,
           status: 'Absent'
         }));
+        console.log('This is records',records);
 
         attendanceRecord = new Attendance({
           date: dateString,
           class: { number: className, section: section.toUpperCase() },
           records
         });
-
+        console.log('This is attendencerecords',attendanceRecord);
         await attendanceRecord.save();
       }
     }

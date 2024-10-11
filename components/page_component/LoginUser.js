@@ -47,7 +47,7 @@ const LoginUser = () => {
     return (
       <div className='form_box' >
         <div >
-          <img src="Register.jpg" alt="Register image" className='Register_image'/>
+          {/* <img src="Register.jpg" alt="Register image" className='Register_image'/> */}
         </div>
         <form onSubmit={handleSubmit} className='form_container'>
           <label>
