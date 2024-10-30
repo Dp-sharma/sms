@@ -1,5 +1,6 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from 'react';
+
 const Page = () => {
   // State to store fetched data and teacher allocations
   const [data, setData] = useState([]);
@@ -9,6 +10,11 @@ const Page = () => {
   // Define periods and classes
   const periods = [1, 2, 3, 4, 5, 6];
   const classes = ['11 A', '11 B', '11 C', '12 A', '12 B', '12 C'];
+
+
+  // fetching the already stored data in the Databse for the Lecture model
+  
+  
 
   // Function to verify user and fetch teacher data
   const verifyUser = async () => {
@@ -56,12 +62,13 @@ const Page = () => {
     } catch (error) {
       console.error('Error:', error);
     }
-  }
+  };
 
   // Fetch user and teacher data when the component mounts
   useEffect(() => {
     verifyUser();
   }, []);
+
   // Add this function to your existing Page component
   const saveAllocations = async () => {
     try {
@@ -73,14 +80,24 @@ const Page = () => {
             number: parseInt(classNumber), // Convert number to integer
             section: classSection 
           },
-          lectureList: periods.map(period => ({
-            lectureNumber: period, // Assuming periods represent lecture numbers
-            subject: 'Some Subject', // Replace with your logic to get the subject
-            teacher: allocations[className]?.[period] || null // Include teacher ID or null
-          }))
+          lectureList: periods.map(period => {
+            const teacherName = allocations[className]?.[period]; // Get the teacher name
+            const teacher = teachers.find(t => `${t.firstName} ${t.lastName}` === teacherName);
+            console.log(teacher);
+            
+            const subject = teacher ? teacher.subject || null : null; // Get teacher's subject or null if not available
+            console.log(subject);
+            
+            return {
+              lectureNumber: period, // Assuming periods represent lecture numbers
+              subject: subject, // Set subject here
+              teacher: teacherName || null // Save teacher name or null if no teacher is assigned
+            };
+          })
         };
       });
-  
+      console.log(structuredAllocations);
+      
       const response = await fetch('/api/lecture/LectureAllocation', {
         method: 'POST',
         headers: {
@@ -88,27 +105,27 @@ const Page = () => {
         },
         body: JSON.stringify({ allocations: structuredAllocations }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Error saving allocations');
       }
-  
+
       const result = await response.json();
       console.log(result.message); // Display success message or handle it as needed
-  
+
     } catch (error) {
       console.error('Error:', error);
     }
   };
-  
+
   // Function to handle teacher selection change
-  const handleTeacherChange = (className, period, teacher) => {
+  const handleTeacherChange = (className, period, teacherName) => {
     setAllocations((prevAllocations) => ({
       ...prevAllocations,
       [className]: {
         ...prevAllocations[className],
-        [period]: teacher,
+        [period]: teacherName,
       },
     }));
   };
@@ -125,9 +142,8 @@ const Page = () => {
 
     // Filter available teachers based on assignments for the current period
     const availableTeachers = teachers.filter(teacher => 
-      !assignedTeachers[teacher._id] || teacher._id === allocations[className]?.[period]
+      !assignedTeachers[`${teacher.firstName} ${teacher.lastName}`] || allocations[className]?.[period] === `${teacher.firstName} ${teacher.lastName}`
     );
-    
 
     // Render the dropdown
     return (
@@ -138,8 +154,8 @@ const Page = () => {
       >
         <option value="">Select Teacher</option>
         {availableTeachers.map(teacher => (
-          <option key={teacher._id} value={teacher._id}>
-            {teacher.firstName}
+          <option key={teacher._id} value={`${teacher.firstName} ${teacher.lastName}`}>
+            {teacher.firstName} {teacher.lastName}
           </option>
         ))}
       </select>
@@ -148,12 +164,12 @@ const Page = () => {
 
   // Function to display the selected teacher's name and reallocation option
   const renderSelectedTeacher = (className, period) => {
-    const selectedTeacherId = allocations[className]?.[period];
-    if (selectedTeacherId) {
-      const teacher = teachers.find(t => t._id === selectedTeacherId);
+    const selectedTeacherName = allocations[className]?.[period];
+    if (selectedTeacherName) {
+      const teacher = teachers.find(t => `${t.firstName} ${t.lastName}` === selectedTeacherName);
       return (
         <div className="flex items-center">
-          <span className="truncate w-28" title={teacher.firstName}>{teacher.firstName}</span>
+          <span className="truncate w-28" title={selectedTeacherName}>{selectedTeacherName}</span>
           <button
             className="ml-2 text-blue-500"
             onClick={() => handleTeacherChange(className, period, '')} // Reset the selection
@@ -201,7 +217,6 @@ const Page = () => {
       </div>
     </div>
   );
-  
-}
+};
 
 export default Page;

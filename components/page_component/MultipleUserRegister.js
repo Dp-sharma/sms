@@ -9,8 +9,9 @@ const MultipleUserRegister = () => {
     event.preventDefault();
     
     const formData = new FormData();
-    formData.append('file', file);
 
+    formData.append('file', file);
+    
     try {
       const res = await fetch('/api/user/CreateMultipleUser', {
         method: 'POST',

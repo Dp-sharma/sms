@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 // Define the schema for a lecture
 const LectureSchema = new Schema({
     lectureNumber: { type: Number, required: true }, // camelCase for consistency
-    subject: { type: String, required: true }, // Use lower camelCase
+    subject: { type: String, default:null }, // Use lower camelCase
     teacher: { type: String, required: true }
 });
 
