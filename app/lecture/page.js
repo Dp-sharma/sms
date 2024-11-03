@@ -3,7 +3,32 @@ import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation';
 
 const page = () => {
+  const [allocations, setAllocations] = useState({});
+  const [school, setSchool] = useState('');
   const router = useRouter();
+  const verifylecturetable = async () => {
+    try {
+      const lecturetable = await fetch('/api/lecture/LectureManagementTable', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ School: school }),
+      });
+      // Handle response errors
+      if (!lecturetable.ok) {
+        console.log('Response is not ok');
+
+        const errorData = await lecturetable.json();
+        throw new Error(errorData.msg || 'Something Went Wrong');
+      }
+      const response = await lecturetable.json();
+      console.log(response);
+       } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
   const verifyuser = async () => { try {
     // Replace with actual API call to create user
     const response = await fetch('api/home', {
@@ -46,11 +71,15 @@ const page = () => {
   }}
  
 useEffect(() => {
-  verifyuser()
+  verifyuser();
+  verifylecturetable();
 }, [])
   return (
     <div>
-      Hey I am lecture page
+      Hey I am the lecture page for teacher
+      <button onClick={verifylecturetable}>
+          verifylecture 
+      </button>
     </div>
   )
 }

@@ -6,15 +6,53 @@ const Page = () => {
   const [data, setData] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [allocations, setAllocations] = useState({});
-  
+  const [school, setSchool] = useState('');
   // Define periods and classes
   const periods = [1, 2, 3, 4, 5, 6];
   const classes = ['11 A', '11 B', '11 C', '12 A', '12 B', '12 C'];
 
 
   // fetching the already stored data in the Databse for the Lecture model
+  const verifylecturetable = async () => {
+    try {
+      const lecturetable = await fetch('/api/lecture/LectureManagementTable', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ School: school }),
+      });
+      // Handle response errors
+      if (!lecturetable.ok) {
+        console.log('Response is not ok');
+
+        const errorData = await lecturetable.json();
+        throw new Error(errorData.msg || 'Something Went Wrong');
+      }
+      const response = await lecturetable.json();
+      console.log(response);
+      if (response.success && response.Data.length > 0) {
+        const fetchedAllocations = {};
   
+        response.Data[0].lectures.forEach((lecture) => {
+          const className = `${lecture.class.number} ${lecture.class.section}`;
+          fetchedAllocations[className] = {};
   
+          lecture.lectureList.forEach((lectureItem) => {
+            fetchedAllocations[className][lectureItem.lectureNumber] = lectureItem.teacher;
+          });
+        });
+  
+        setAllocations(fetchedAllocations);
+        console.log('Fetched Allocations:', fetchedAllocations);}
+        else {
+          console.log('No data found or success flag is false');
+        }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
 
   // Function to verify user and fetch teacher data
   const verifyUser = async () => {
@@ -37,7 +75,9 @@ const Page = () => {
 
       const data = await response.json();
       const schoolName = data.data.school;
+      console.log(schoolName);
 
+      setSchool(schoolName);
       // Fetch teacher data based on the school name
       const postResponse = await fetch('/api/lecture/TeacherData', {
         method: 'POST',
@@ -76,18 +116,18 @@ const Page = () => {
       const structuredAllocations = Object.keys(allocations).map(className => {
         const [classNumber, classSection] = className.split(' '); // Split class name into number and section
         return {
-          class: { 
+          class: {
             number: parseInt(classNumber), // Convert number to integer
-            section: classSection 
+            section: classSection
           },
           lectureList: periods.map(period => {
             const teacherName = allocations[className]?.[period]; // Get the teacher name
             const teacher = teachers.find(t => `${t.firstName} ${t.lastName}` === teacherName);
             console.log(teacher);
-            
+
             const subject = teacher ? teacher.subject || null : null; // Get teacher's subject or null if not available
             console.log(subject);
-            
+
             return {
               lectureNumber: period, // Assuming periods represent lecture numbers
               subject: subject, // Set subject here
@@ -97,13 +137,13 @@ const Page = () => {
         };
       });
       console.log(structuredAllocations);
-      
+
       const response = await fetch('/api/lecture/LectureAllocation', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ allocations: structuredAllocations }),
+        body: JSON.stringify({ allocations: structuredAllocations, school }),
       });
 
       if (!response.ok) {
@@ -141,14 +181,14 @@ const Page = () => {
     });
 
     // Filter available teachers based on assignments for the current period
-    const availableTeachers = teachers.filter(teacher => 
+    const availableTeachers = teachers.filter(teacher =>
       !assignedTeachers[`${teacher.firstName} ${teacher.lastName}`] || allocations[className]?.[period] === `${teacher.firstName} ${teacher.lastName}`
     );
 
     // Render the dropdown
     return (
-      <select 
-        value={allocations[className]?.[period] || ''} 
+      <select
+        value={allocations[className]?.[period] || ''}
         onChange={(e) => handleTeacherChange(className, period, e.target.value)}
         className="border rounded-md p-1 text-sm"
       >
@@ -185,11 +225,17 @@ const Page = () => {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-4">Lecture Management</h1>
-      <button 
-        onClick={saveAllocations} 
+      <button
+        onClick={saveAllocations}
         className="mb-4 bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600"
       >
         Save Allocations
+      </button>
+      <button
+        onClick={verifylecturetable}
+        className="mb-4 bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600"
+      >
+        Verify lecture Management
       </button>
       <div className="overflow-x-auto bg-white rounded-lg shadow-md">
         <table className="min-w-full table-auto">

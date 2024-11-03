@@ -7,21 +7,35 @@ export async function POST(request) {
     try {
         await connectDB(); // Ensure DB connection
 
-        const { allocations } = await request.json(); // Parse the request body
+        const { allocations, school } = await request.json(); // Parse the request body
 
+        // Debugging logs
+        console.log('Parsed school name:', school);
+        console.log('Parsed allocations:', allocations);
+        
         // Create or update the lecture allocations
-        const existingAllocation = await LectureMain.findOne({}); // Adjust your query as needed
+        const existingAllocation = await LectureMain.findOne({ School:school }); // Adjust your query as needed
 
         if (existingAllocation) {
+            console.log('Allocation with same school is founded.....');
+            
             existingAllocation.lectures = allocations; // Update existing record
             await existingAllocation.save();
+            console.log('Updated existing allocation for school:', school);
         } else {
-            const newAllocation = new LectureMain({ lectures: allocations });
+            console.log(allocations); //
+            console.log(school); //
+
+            const newAllocation = new LectureMain({ School: school, lectures: allocations });
             await newAllocation.save();
+            console.log(newAllocation);
+            
+            console.log('Created new allocation for school:', school);
+            // await LectureMain.create({schoolName : school , Lectures : allocations});
         }
 
-        return NextResponse.json({ 
-            message: 'Allocations saved successfully' 
+        return NextResponse.json({
+            message: 'Allocations saved successfully'
         }, { status: 200 });
     } catch (error) {
         console.error(error);

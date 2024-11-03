@@ -21,7 +21,7 @@ export async function GET(request){
         console.log(decoded); 
          // Extract class information from the decoded token
          const { user } = decoded;
-         console.log(user);
+         console.log('This is the decode user',user);
          
         
          // Fetch student data from the database

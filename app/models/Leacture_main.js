@@ -17,6 +17,7 @@ const ClassSchema = new Schema({
 
 // Define the main schema for lectures within a class
 const LectureMainSchema = new Schema({
+    School: { type: String, required: true }, // Added schoolName field
     lectures: [
         {
             class: { type: ClassSchema, required: true },
