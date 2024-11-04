@@ -1,87 +1,117 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-const page = () => {
+const Page = () => {
   const [allocations, setAllocations] = useState({});
-  
+  const [periods, setPeriods] = useState([]);
   const router = useRouter();
-  const verifylecturetable = async (school) => {
-    console.log('this is the school name',school);
+
+  const verifyLectureTable = async (school, teacherName) => {
+    console.log('School name:', school);
     
     try {
-      const lecturetable = await fetch('/api/lecture/LectureManagementTable', {
+      const lectureTableResponse = await fetch('/api/lecture/LectureManagementTable', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ School: school }),
       });
-      // Handle response errors
-      if (!lecturetable.ok) {
-        console.log('Response is not ok');
 
-        const errorData = await lecturetable.json();
+      if (!lectureTableResponse.ok) {
+        console.log('Response is not ok');
+        const errorData = await lectureTableResponse.json();
         throw new Error(errorData.msg || 'Something Went Wrong');
       }
-      const response = await lecturetable.json();
+
+      const response = await lectureTableResponse.json();
       console.log(response);
-      setAllocations(response)
-       } catch (error) {
+      setAllocations(response);
+      
+      // Create an array for periods
+      const maxPeriods = 6; // Assuming max 6 periods based on your data
+      const periodsData = Array(maxPeriods).fill(null).map(() => []);
+
+      // Populate periodsData
+      response.Data.forEach(schoolData => {
+        schoolData.lectures.forEach(({ class: classInfo, lectureList }) => {
+          lectureList.forEach(lecture => {
+            if (lecture.teacher.includes(teacherName)) {
+              const periodIndex = lecture.lectureNumber - 1; // Zero-based index
+              periodsData[periodIndex].push({
+                className: `${classInfo.number} ${classInfo.section}`,
+                subject: lecture.subject,
+              });
+            }
+          });
+        });
+      });
+
+      setPeriods(periodsData);
+
+    } catch (error) {
       console.error('Error:', error);
     }
-  }
+  };
 
-  const verifyuser = async () => { try {
-    // Replace with actual API call to create user
-    const response = await fetch('/api/home', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-     
-    });
+  const verifyUser = async () => {
+    try {
+      const response = await fetch('/api/home', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.log(errorData);
+        throw new Error(errorData.msg || 'Something Went Wrong');
+      }
       
-      console.log(errorData);
-      throw new Error(errorData.msg || 'Something Went Wrong');
-
+      const data = await response.json();
+      console.log(data.data);
+      console.log(data.data.school);
+      
+      const teacherName = data.data.firstName; // Get the teacher's name
+      verifyLectureTable(data.data.school, teacherName); // Pass teacherName to the function
+    } catch (error) {
+      console.error('Error creating user:', error);
     }
-    //log the data in response
-    const data = await response.json();
-    
-    verifylecturetable(data.data.school);
-    console.log(data.data);
-    console.log(data.data.school);
-    const user = data.data.role;
-    
-    
+  };
 
-    
-    
-  } catch (error) {
-    
-    console.error('Error creating user:', error);
-    // Handle any network or other errors here
-  }}
- 
-useEffect(() => {
-  verifyuser();
-  
-}, [])
+  useEffect(() => {
+    verifyUser();
+  }, []);
+
   return (
     <div>
-      Hey I am the lecture page for teacher
-      <button onClick={verifylecturetable}
-      className="mb-4 bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600"
-      >
-          verifylecture 
-      </button>
-      
+      <h1>Lecture Page for Teacher</h1>
+      {periods.length > 0 ? (
+        <ul>
+          {periods.map((periodClasses, index) => (
+            <li key={index}>
+              <strong>Period {index + 1}:</strong>
+              {periodClasses.length > 0 ? (
+                <ul>
+                  {periodClasses.map((lecture, idx) => (
+                    <li key={idx}>
+                      Class: {lecture.className}, Subject: {lecture.subject}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No classes for this period.</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No lectures found for this teacher.</p>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default Page;
